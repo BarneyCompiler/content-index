@@ -125,7 +125,8 @@ The checks stay red until the file is there.
 The checks of a pull request from a new GitHub account can wait until a steward starts them.
 
 The [listing page](https://ksamodding.github.io/content-index/) writes the first version of a new pack when you set the type to `modpack`.
-You pick each member from the listed mods and their releases that are not yanked, and the page opens GitHub at `packs/<id>/<version>.toml`.
+You pick each member from the listed mods and their releases that are not yanked and still download, and the page opens GitHub at `packs/<id>/<version>.toml`.
+A release whose download is gone from its host is not offered, and a loaded pin of it stays with a note that names the member, the version and the date.
 "Check the id" tells you whether the pack id is free, yours, or held by another account, in which case a steward decides.
 For a free id, it also writes `owner.json` from your GitHub login and numeric account id, to copy or to save.
 [Borea](https://ksamodding.github.io/Borea/) is getting a pack editor that opens the pull request with both files at once ([Borea#566](https://github.com/KSAModding/Borea/issues/566)).

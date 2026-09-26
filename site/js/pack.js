@@ -30,8 +30,15 @@ export function versionChoices(index, id, current = "") {
   const member = memberOf(index, id);
   const choices = (member ? member.releases : []).map((release) =>
     [release.version, release.status ? `${release.version} (${release.status})` : release.version]);
-  if (current && !choices.some(([version]) => version === current)) choices.push([current, `${current} (not offered by the index)`]);
+  if (current && !choices.some(([version]) => version === current)) {
+    choices.push([current, member && member.gone.has(current) ? `${current} (no longer downloadable)` : `${current} (not offered by the index)`]);
+  }
   return choices;
+}
+
+function dateOf(time) {
+  const date = /^[0-9]{4}-[0-9]{2}-[0-9]{2}/.exec(time);
+  return date ? date[0] : time;
 }
 
 export function defaultVersion(index, id) {
@@ -59,6 +66,12 @@ export function pinNotes(document, index) {
     const where = `mods[${number}]`;
     if (!member) {
       found.push({ level: NOTE, path: where, text: `'${pin.id}' is not a listed mod in the index snapshot, so the page offers no release of it; the pin stays as it is` });
+    } else if (member.gone.has(pin.version)) {
+      found.push({
+        level: NOTE,
+        path: where,
+        text: `'${pin.id}' ${pin.version} is no longer downloadable since ${dateOf(member.gone.get(pin.version).since)}, so the page does not offer it; the pin stays as it is`,
+      });
     } else if (!release && typeof pin.version === "string") {
       found.push({ level: NOTE, path: where, text: `'${pin.id}' has no release '${pin.version}' in the index snapshot that is not yanked; the pin stays as it is` });
     }
@@ -81,9 +94,12 @@ function olderThan(bound, release) {
   return year < targetYear || (year === targetYear && number <= targetNumber);
 }
 
+// A pin of a release whose download is gone still counts, because the pin stays
+// and that release still needs its game_min.
 function proposedGameMin(document, index) {
   let highest = null;
-  for (const { release } of pinnedReleases(document, index)) {
+  for (const { pin, member, release: offered } of pinnedReleases(document, index)) {
+    const release = offered || (member ? member.gone.get(pin.version) : undefined);
     if (!release || release.gameMinRevision === null || !release.gameMin) continue;
     if (!highest || release.gameMinRevision > highest.gameMinRevision) highest = release;
   }
