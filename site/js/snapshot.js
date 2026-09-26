@@ -13,16 +13,27 @@ export function newestStable(releases) {
   return stable.length ? stable[0].version : null;
 }
 
-// The releases a pack can pin, which are stamped and not yanked, newest first.
+// The time the watcher found the download gone from its host (RFC 0078), or null.
+function goneSince(release) {
+  const since = release.download ? release.download.unavailable_since : undefined;
+  return typeof since === "string" && since ? since : null;
+}
+
+function releaseFacts(release) {
+  return {
+    version: release.version,
+    status: typeof release.release_status === "string" ? release.release_status : "",
+    gameMin: typeof release.game_min === "string" ? release.game_min : "",
+    gameMinRevision: Number.isInteger(release.game_min_revision) ? release.game_min_revision : null,
+  };
+}
+
+// The releases a pack can pin, which are stamped, not yanked and still
+// downloadable, newest first.
 export function pinnableReleases(releases) {
   const kept = (Array.isArray(releases) ? releases : [])
-    .filter((release) => release && !release.yanked && typeof release.version === "string")
-    .map((release) => ({
-      version: release.version,
-      status: typeof release.release_status === "string" ? release.release_status : "",
-      gameMin: typeof release.game_min === "string" ? release.game_min : "",
-      gameMinRevision: Number.isInteger(release.game_min_revision) ? release.game_min_revision : null,
-    }));
+    .filter((release) => release && !release.yanked && typeof release.version === "string" && !goneSince(release))
+    .map(releaseFacts);
   kept.sort((a, b) => -(semverCompare(a.version, b.version) ?? 0));
   return kept;
 }
@@ -33,6 +44,16 @@ export function releaseStatuses(releases) {
   return new Map((Array.isArray(releases) ? releases : [])
     .filter((release) => release && typeof release.version === "string")
     .map((release) => [release.version, typeof release.release_status === "string" ? release.release_status : ""]));
+}
+
+// The releases that the picker leaves out only because their download is gone,
+// each with the time it went away. A yanked release is not in this map, because
+// its pin gets the yank note. The mark does not change what a release needs, so
+// the game_min proposal still counts a pin of a gone release.
+function goneReleases(releases) {
+  return new Map((Array.isArray(releases) ? releases : [])
+    .filter((release) => release && !release.yanked && typeof release.version === "string" && goneSince(release))
+    .map((release) => [release.version, { ...releaseFacts(release), since: goneSince(release) }]));
 }
 
 // The facts of a pack's forum member list, found the way Borea finds them. A pin
@@ -87,7 +108,7 @@ export function indexFacts(snapshot, threadPattern) {
     const delisted = listing.index_status && listing.index_status.state === "delisted";
     if (type === "mod" && !delisted) {
       const name = typeof authored.name === "string" ? authored.name : "";
-      members.push({ id: listing.id, name, releases: pinnableReleases(listing.releases), statuses: releaseStatuses(listing.releases) });
+      members.push({ id: listing.id, name, releases: pinnableReleases(listing.releases), statuses: releaseStatuses(listing.releases), gone: goneReleases(listing.releases) });
     }
     if ((type === "mod" || type === "mod-loader") && !delisted && !forum.has(folded)) forum.set(folded, forumFacts(listing, authored));
   }

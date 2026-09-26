@@ -35,9 +35,16 @@ const snapshot = {
           yanked: true,
           game_min: "2026.9.25.5500",
           game_min_revision: 5500,
-          download: { url: "https://example.com/DeltaVMap-1.3.0.zip" },
+          download: { url: "https://example.com/DeltaVMap-1.3.0.zip", unavailable_since: "2026-09-26T08:00:00Z" },
         },
         { version: "1.3.0-beta.1", release_status: "testing", game_min: "2026.9.22.5482", game_min_revision: 5482 },
+        {
+          version: "1.2.8",
+          release_status: "stable",
+          game_min: "2026.9.22.5482",
+          game_min_revision: 5482,
+          download: { url: "https://example.com/DeltaVMap-1.2.8.zip", unavailable_since: "2026-09-23T10:24:00Z" },
+        },
         { version: "1.2.7", release_status: "stable", game_min: "2026.9.22.5482", game_min_revision: 5482 },
         {
           version: "1.2.6",
@@ -64,6 +71,11 @@ const snapshot = {
       releases: [{ version: "0.9.13", release_status: "stable", game_min: "2026.9", game_min_revision: 5402 }],
     },
     { id: "Unreleased", authored: { type: "mod" }, releases: [] },
+    {
+      id: "Unscience",
+      authored: { type: "mod", name: "Unscience", authors: ["meow-sci"], license: "MIT" },
+      releases: [{ version: "1.66.0", release_status: "stable", download: { url: "https://example.com/unscience-1.66.0.zip", unavailable_since: "2026-09-23T10:24:00Z" } }],
+    },
     {
       id: "StarMap",
       authored: { type: "mod-loader", name: "StarMap", authors: ["StarMap Team"], license: "MIT" },
@@ -118,7 +130,7 @@ test("a pack loaded into the form and written back is unchanged", () => {
   }
 });
 
-test("the picker offers listed mods at releases that are not yanked, newest first", () => {
+test("the picker offers listed mods at releases that are not yanked and still download, newest first", () => {
   assert.deepEqual(memberChoices(index), [
     ["AdvancedFlightComputer", "Advanced Flight Computer (AdvancedFlightComputer)"],
     ["Compendium", "Compendium"],
@@ -148,6 +160,41 @@ test("a loaded pin the snapshot does not list stays in the file and gets a note"
   assert.deepEqual(memberChoices(index, "NotListed").at(-1), ["NotListed", "NotListed (not offered by the index)"]);
   assert.deepEqual(versionChoices(index, "NotListed", "2.0.0"), [["2.0.0", "2.0.0 (not offered by the index)"]]);
   assert.deepEqual(versionChoices(index, "DeltaVMap", "1.3.0").at(-1), ["1.3.0", "1.3.0 (not offered by the index)"]);
+});
+
+test("a release whose download is gone is left out, and a loaded pin of it is kept with a note that names it and the date", () => {
+  const document = { ...documentFromForm(packForm(), null), mods: [{ id: "DeltaVMap", version: "1.2.8" }, { id: "Unscience", version: "1.66.0" }] };
+  assert.deepEqual(pinNotes(document, index).map((entry) => [entry.level, entry.path, entry.text]), [
+    [NOTE, "mods[0]", "'DeltaVMap' 1.2.8 is no longer downloadable since 2026-09-23, so the page does not offer it; the pin stays as it is"],
+    [NOTE, "mods[1]", "'Unscience' 1.66.0 is no longer downloadable since 2026-09-23, so the page does not offer it; the pin stays as it is"],
+  ]);
+  assert.deepEqual(checker.check(document, { index }).filter((entry) => entry.level === ERROR), []);
+  assert.deepEqual(pinNotes({ type: "modpack", mods: [{ id: "DeltaVMap", version: "1.3.0" }] }, index).map((entry) => entry.text), [
+    "'DeltaVMap' has no release '1.3.0' in the index snapshot that is not yanked; the pin stays as it is",
+  ]);
+  assert.deepEqual(versionChoices(index, "DeltaVMap", "1.2.8").at(-1), ["1.2.8", "1.2.8 (no longer downloadable)"]);
+  assert.deepEqual(versionChoices(index, "Unscience"), []);
+  assert.deepEqual(memberChoices(index, "Unscience").at(-1), ["Unscience", "Unscience (not offered by the index)"]);
+  assert.deepEqual(newerNotes({ type: "modpack", mods: [{ id: "DeltaVMap", version: "1.2.6" }] }, index).map((entry) => entry.newer), ["1.2.7"]);
+  assert.deepEqual(forumLines(document, index), [
+    "Delta-V Map 1.2.8 - Author: Maxi - License: MIT - Download: https://example.com/DeltaVMap-1.2.8.zip - Thread: https://forums.ahwoo.com/threads/deltavmap.978/",
+    "Unscience 1.66.0 - Author: meow-sci - License: MIT - Download: https://example.com/unscience-1.66.0.zip - Thread: ",
+  ]);
+  const gonePin = { ...document, mods: [{ id: "DeltaVMap", version: "1.2.8" }, { id: "Compendium", version: "0.9.13" }] };
+  assert.deepEqual(gameMinNotes({ ...gonePin, compatibility: {} }, index).map((entry) => entry.text), [
+    "the pinned releases need at least '2026.9.22.5482', the highest game_min among them, so that is the proposed oldest game version",
+  ]);
+  assert.equal(gameMinNotes({ ...gonePin, compatibility: { game_min: "2026.9" } }, index).length, 1);
+});
+
+test("the same release without the mark is offered, and its pin has no note", () => {
+  const unmarked = JSON.parse(JSON.stringify(snapshot, (key, value) => (key === "unavailable_since" ? undefined : value)));
+  const restored = indexFacts(unmarked, checker.threadPattern);
+  assert.deepEqual(versionChoices(restored, "DeltaVMap").slice(0, 2), [["1.3.0-beta.1", "1.3.0-beta.1 (testing)"], ["1.2.8", "1.2.8 (stable)"]]);
+  assert.equal(defaultVersion(restored, "DeltaVMap"), "1.2.8");
+  assert.deepEqual(versionChoices(restored, "Unscience"), [["1.66.0", "1.66.0 (stable)"]]);
+  assert.deepEqual(pinNotes({ type: "modpack", mods: [{ id: "DeltaVMap", version: "1.2.8" }, { id: "Unscience", version: "1.66.0" }] }, restored), []);
+  assert.deepEqual(newerNotes({ type: "modpack", mods: [{ id: "DeltaVMap", version: "1.2.6" }] }, restored).map((entry) => entry.newer), ["1.2.8"]);
 });
 
 test("the page proposes the highest game_min of the pinned releases as a note", () => {
