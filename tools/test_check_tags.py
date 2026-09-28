@@ -5,6 +5,7 @@
 
 import tempfile
 import sys
+import tomllib
 import unittest
 from pathlib import Path
 
@@ -36,6 +37,22 @@ class Vocabulary(unittest.TestCase):
                 "tools",
                 "library",
             ],
+        )
+
+    def test_every_repository_forum_prefix_has_its_id(self):
+        with check_tags.TAGS.open("rb") as handle:
+            entries = tomllib.load(handle)["mod"]
+        self.assertEqual(
+            {entry["tag"]: entry.get("forum_prefix_id") for entry in entries if "forum_prefix" in entry},
+            {
+                "parts": 4,
+                "celestial": 6,
+                "gameplay": 9,
+                "user-interface": 8,
+                "visual": 11,
+                "audio": 7,
+                "tools": 10,
+            },
         )
 
     def test_a_boolean_spec_version_is_invalid(self):
