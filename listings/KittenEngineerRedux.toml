@@ -4,6 +4,8 @@ type = "mod"
 name = "Kitten Engineer Redux"
 authors = ["BarneyTheGod"]
 abstract = "Utility mod for KSA that mirrors KSP's Kerbal Engineer Redux."
+description = """
+Kitten Engineer Redux is a utility readout mod for Kitten Space Agency. It aims to mirror the KSP mod "Kerbal Engineer Redux" by providing the player with useful vehicle data inside of the VAB and during flight."""
 license = "MIT"
 tags = ["gameplay", "user-interface"]
 
