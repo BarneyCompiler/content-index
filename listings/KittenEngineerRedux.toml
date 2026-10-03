@@ -35,10 +35,10 @@ min = "0.2.2"
 max = "0.2.2"
 
 [images.icon]
-url = "https://pictureurl.com/api/storage/file?key=u%2Fanon%2Ff5eaecee-76e9-4eee-af77-cb3a55b4ddd8-Group_104.png"
-sha256 = "633f37089fcaaa5ab624bc2457147319482f9346dd74bead9505c43329d31c93"
-width = 573
-height = 505
-size = 183796
+url = "https://pictureurl.com/api/storage/file?key=u%2Fanon%2Fa7bd986d-ca4c-48c8-b3b8-7e7a40208a58-Group_105.png"
+sha256 = "f99717246f2c1cf7aaff37743f987aa0ae18fc5608a0651f0a5e1fc27007dfad"
+width = 512
+height = 512
+size = 184315
 license = "MIT"
 attribution = "BarneyTheGod"
