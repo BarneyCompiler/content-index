@@ -35,10 +35,10 @@ min = "0.2.2"
 max = "0.2.2"
 
 [images.icon]
-url = "https://pictureurl.com/api/storage/file?key=u%2Fanon%2Fa7bd986d-ca4c-48c8-b3b8-7e7a40208a58-Group_105.png"
-sha256 = "f99717246f2c1cf7aaff37743f987aa0ae18fc5608a0651f0a5e1fc27007dfad"
+url = "https://i.imgur.com/YQXQrtm.png"
+sha256 = "3c528ca59bbb0462858f7d39dd0553ba5490a485fec14e1f682e15570a37eebc"
 width = 512
 height = 512
-size = 184315
+size = 183766
 license = "MIT"
 attribution = "BarneyTheGod"
