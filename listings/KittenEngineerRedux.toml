@@ -1,0 +1,44 @@
+spec_version = 1
+id = "KittenEngineerRedux"
+type = "mod"
+name = "Kitten Engineer Redux"
+authors = ["BarneyTheGod"]
+abstract = "Utility mod for KSA that mirrors KSP's Kerbal Engineer Redux."
+license = "MIT"
+tags = ["gameplay", "user-interface"]
+
+[releases]
+github = "BarneyCompiler/Kitten-Engineer-Redux"
+spacedock = 4043
+authority = "github"
+
+[links]
+forums = "https://forums.ahwoo.com/forums/kitten-space-agency/mod-releases/kitten-engineer-redux-ker.443/"
+homepage = "https://github.com/BarneyCompiler/Kitten-Engineer-Redux"
+repository = "https://github.com/BarneyCompiler/Kitten-Engineer-Redux"
+spacedock = "https://spacedock.info/mod/4043/Kitten%20Engineer%20Redux"
+bugtracker = "https://github.com/BarneyCompiler/Kitten-Engineer-Redux/issues"
+
+[compatibility]
+game_min = "2026.10.7.5541"
+game_max = "2026.10.7.5541"
+
+[loader]
+id = "StarMap"
+min = "0.4.7"
+max = "0.4.7"
+
+[[dependencies]]
+id = "ModMenu"
+kind = "required"
+min = "0.2.2"
+max = "0.2.2"
+
+[images.icon]
+url = "https://pictureurl.com/api/storage/file?key=u%2Fanon%2Ff5eaecee-76e9-4eee-af77-cb3a55b4ddd8-Group_104.png"
+sha256 = "633f37089fcaaa5ab624bc2457147319482f9346dd74bead9505c43329d31c93"
+width = 573
+height = 505
+size = 183796
+license = "MIT"
+attribution = "BarneyTheGod"
