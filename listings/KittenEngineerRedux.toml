@@ -10,10 +10,10 @@ Kitten Engineer Redux is a utility readout mod for Kitten Space Agency. It aims 
 Dependencies:
  - [ModMenu](https://github.com/MrJeranimo/ModMenu/)
 
-![text](ksa-image:editor)
-![text](ksa-image:flight-01)
-![text](ksa-image:flight-02)
-![text](ksa-image:flight-03)"""
+![editor](ksa-image:editor)
+![flight-01](ksa-image:flight-01)
+![flight-02](ksa-image:flight-02)
+![flight-03](ksa-image:flight-03)"""
 license = "MIT"
 tags = ["parts", "gameplay", "user-interface", "visual", "audio", "tools"]
 
