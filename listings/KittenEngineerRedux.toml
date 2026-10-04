@@ -8,9 +8,14 @@ description = """
 Kitten Engineer Redux is a utility readout mod for Kitten Space Agency. It aims to mirror the KSP mod "Kerbal Engineer Redux" by providing the player with useful vehicle data inside of the VAB and during flight.
 
 Dependencies:
- - [ModMenu](https://github.com/MrJeranimo/ModMenu/)"""
+ - [ModMenu](https://github.com/MrJeranimo/ModMenu/)
+
+![text](ksa-image:editor)
+![text](ksa-image:flight-01)
+![text](ksa-image:flight-02)
+![text](ksa-image:flight-03)"""
 license = "MIT"
-tags = ["gameplay", "user-interface"]
+tags = ["parts", "gameplay", "user-interface", "visual", "audio", "tools"]
 
 [releases]
 github = "BarneyCompiler/Kitten-Engineer-Redux"
@@ -47,3 +52,35 @@ height = 512
 size = 183766
 license = "MIT"
 attribution = "BarneyTheGod"
+
+[[images.description]]
+id = "flight-01"
+url = "https://i.imgur.com/v4gZpFp.jpeg"
+sha256 = "1c2bd8862f4fe43e8c3bbd6d46fce57de4e8cebce61c7d571a264443a3dbc0ee"
+width = 2034
+height = 1108
+size = 566322
+
+[[images.description]]
+id = "flight-02"
+url = "https://i.imgur.com/LNVQ9Xi.jpeg"
+sha256 = "fcccccf710f671bd49831b584dc77dc546256f5c10738a5c964ee75cf769cd58"
+width = 2036
+height = 1108
+size = 487613
+
+[[images.description]]
+id = "flight-03"
+url = "https://i.imgur.com/JH761vg.jpeg"
+sha256 = "1c2bd8862f4fe43e8c3bbd6d46fce57de4e8cebce61c7d571a264443a3dbc0ee"
+width = 2034
+height = 1108
+size = 566322
+
+[[images.description]]
+id = "editor"
+url = "https://i.imgur.com/qszb6de.jpeg"
+sha256 = "0a5245271b71c68fc2b01cf499195623a8ac8b5ed8d54f14de373edb05b3d5a0"
+width = 2037
+height = 1108
+size = 239355
