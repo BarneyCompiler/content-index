@@ -15,7 +15,7 @@ Dependencies:
 ![flight-02](ksa-image:flight-02)
 ![flight-03](ksa-image:flight-03)"""
 license = "MIT"
-tags = ["parts", "gameplay", "user-interface", "visual", "audio", "tools"]
+tags = ["gameplay", "user-interface", "tools"]
 
 [releases]
 github = "BarneyCompiler/Kitten-Engineer-Redux"
